@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Codeforces Rating Predictor</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/result.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <!-- Back Button -->
+    <div class="back-icon">
+        <a href="javascript:history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
+
+    <div class="centered-container">
+
+        <h1>Codeforces Rating Predictor</h1>
+
+        <br>
+
+
+        <!-- Profile Section -->
+        <div class="profile-details">
+
+            <div class="profile-photo-container">
+
+                <img
+                    src="{{ user_data.avatar }}"
+                    alt="Profile Image"
+                    class="profile-photo"
+                >
+
+            </div>
+
+
+            <div class="user-info">
+
+                {% if user_data.rank_color == "#FF0000" %}
+
+                    <h2 class="user-handle">
+
+                        <span
+                            style="
+                                color: black;
+                                display: inline-block;
+                                margin: 0;
+                            "
+                        >
+                            {{ user_data.handle[0] }}
+                        </span>
+
+                        <span
+                            style="
+                                color: red;
+                                display: inline-block;
+                                margin: 0;
+                            "
+                        >
+                            {{ user_data.handle[1:] }}
+                        </span>
+
+                    </h2>
+
+                {% else %}
+
+                    <h2
+                        class="user-handle"
+                        style="color: {{ user_data.rank_color }}"
+                    >
+                        {{ user_data.handle }}
+                    </h2>
+
+                {% endif %}
+
+
+                <!-- Actual Rating -->
+                <p>
+                    <strong>Rating:</strong>
+
+                    {% if user_data.rating is defined %}
+                        {{ user_data.rating }}
+                    {% else %}
+                        Unrated
+                    {% endif %}
+                </p>
+
+                <br>
+
+
+                <!-- Maximum Rating -->
+                <p>
+                    <strong>Max Rating:</strong>
+
+                    {% if user_data.maxRating is defined %}
+                        {{ user_data.maxRating }}
+                    {% else %}
+                        Unrated
+                    {% endif %}
+                </p>
+
+                <br>
+
+
+                <!-- Rank -->
+                <p>
+                    <strong>Rank:</strong>
+
+                    {% if user_data.rank is defined %}
+                        {{ user_data.rank }}
+                    {% else %}
+                        Unrated
+                    {% endif %}
+                </p>
+
+                <br>
+
+
+                <!-- Country -->
+                <p>
+                    <strong>Country:</strong>
+
+                    {{ user_data.country
+                        if user_data.country
+                        else 'Not provided'
+                    }}
+
+                </p>
+
+                <br>
+
+
+                <!-- Organization -->
+                <p>
+                    <strong>Organization:</strong>
+
+                    {{ user_data.organization
+                        if user_data.organization
+                        else 'Not provided'
+                    }}
+
+                </p>
+
+                <br><br>
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <!-- Prediction Statistics -->
+        <div class="extra-buttons">
+
+
+            <!-- Expected Rating -->
+            <div class="button-wrapper">
+
+                <p>Expected Rating</p>
+
+                <button>
+                    {{ prediction | round(2) }}
+                </button>
+
+            </div>
+
+
+            <!-- Actual Rating -->
+            <div class="button-wrapper">
+
+                <p>Actual Rating</p>
+
+                {% if user_data.rating is defined %}
+
+                    <button>
+                        {{ user_data.rating }}
+                    </button>
+
+                {% else %}
+
+                    <button>
+                        Unrated
+                    </button>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Error -->
+            <div class="button-wrapper">
+
+                <p>Error</p>
+
+                {% if user_data.rating is defined and user_data.rating > 0 %}
+
+                    <button>
+                        {{
+                            (
+                                (
+                                    (user_data.rating - prediction)
+                                    if (user_data.rating - prediction) >= 0
+                                    else -(user_data.rating - prediction)
+                                )
+                                / user_data.rating
+                            ) * 100
+                            | round(2)
+                        }}%
+                    </button>
+
+                {% else %}
+
+                    <button>
+                        N/A
+                    </button>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <!-- Message -->
+        <div class="message">
+
+            <p>{{ msg }}</p>
+
+        </div>
+
+
+        <br><br>
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <div class="social-links">
+
+            <a
+                href="https://github.com/OmAmar106/Codeforces-Rating-Predictor"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <i class="fab fa-github">&nbsp;&nbsp;</i>
+            </a>
+
+
+            <a
+                href="https://www.linkedin.com/in/om-amar/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <i class="fab fa-linkedin"></i>
+            </a>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>
